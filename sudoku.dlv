@@ -1,0 +1,48 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                _       _           %
+%  ___ _   _  __| | ___ | | ___   _  %
+% / __| | | |/ _` |/ _ \| |/ / | | | %
+% \__ \ |_| | (_| | (_) |   <| |_| | %
+% |___/\__,_|\__,_|\___/|_|\_\\__,_| %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Thomas Otten 2022
+
+%%%%%%%%%
+% Setup %
+%%%%%%%%%
+row(1..9).
+col(1..9).
+val(1..9).
+
+% Prepopulate the board
+place(1,1,4). place(1,2,5). place(1,3,7). place(1,6,8). place(1,8,2). place(2,2,3).
+place(2,4,5). place(2,5,2). place(2,8,9). place(2,9,4). place(3,1,2). place(4,2,7).
+place(4,3,1). place(4,6,3). place(5,1,9). place(5,2,6). place(5,5,8). place(5,8,4).
+place(5,9,1). place(6,4,6). place(6,7,3). place(6,8,5). place(7,9,3). place(8,1,6).
+place(8,2,2). place(8,5,1). place(8,6,4). place(8,8,7). place(9,2,8). place(9,4,7).
+place(9,7,4). place(9,8,1). place(9,9,5).
+
+%%%%%%%%%%%
+% Placing %
+%%%%%%%%%%%
+
+% Place numbers
+place(R, C, 1)
+v place(R, C, 2)
+v place(R, C, 3)
+v place(R, C, 4)
+v place(R, C, 5)
+v place(R, C, 6)
+v place(R, C, 7)
+v place(R, C, 8)
+v place(R, C, 9)
+    :- row(R), col(C).
+
+% Can't have duplicate numbers in rows or columns
+:- place(R, C1, VAL), place(R, C2, VAL), C1 != C2.
+:- place(R1, C, VAL), place(R2, C, VAL), R1 != R2.
+
+% Make sure the sub regions work
+region(REG, N) :- place(R, C, N), S1X = R-1, S2X = S1X/3, SY = C-1, Y = SY/3 , X = S2X * 10, REG = X + Y.
+region_set(REG) :- region(REG, _).
+:- not region(REG, VAL), val(VAL), region_set(REG).
